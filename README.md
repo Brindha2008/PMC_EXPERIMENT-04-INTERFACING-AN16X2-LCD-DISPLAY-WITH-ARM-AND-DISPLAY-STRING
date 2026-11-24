@@ -1,7 +1,7 @@
 # EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM AND DISPLAY STRING
-## Name :
-## Roll no :
-## Date of Experiment :
+## Name :BRINDHA A R
+## Roll no :212225040050
+## Date of Experiment :24/11/2026
 ## Aim: To Interface a 16X2 LCD display to ARM controller  , and simulate it in Proteus 
 ## Components required: STM32 CUBE IDE, Proteus 8 simulator .
 ## Theory 
@@ -175,14 +175,87 @@ https://engineeringxpert.com/wp-content/uploads/2022/04/26.png
 
 ## STM 32 CUBE PROGRAM :
 
+```
+#include "main.h"
+#include "lcd.h"
 
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+
+/* Reliable Proteus delay that never hangs on SysTick */
+void HAL_Delay(uint32_t Delay)
+{
+    for (volatile uint32_t i = 0; i < Delay * 600; i++)
+    {
+    }
+}
+
+int main(void)
+{
+    SystemClock_Config();
+    MX_GPIO_Init();
+
+    Lcd_PortType ports[] = { GPIOA, GPIOA, GPIOA, GPIOA };
+    Lcd_PinType pins[]   = { GPIO_PIN_10, GPIO_PIN_3, GPIO_PIN_2, GPIO_PIN_0 };
+
+    Lcd_HandleTypeDef lcd = Lcd_create(ports, pins, GPIOB, GPIO_PIN_1, GPIOB, GPIO_PIN_0, LCD_4_BIT_MODE);
+
+    Lcd_cursor(&lcd, 0, 3);
+    Lcd_string(&lcd, "BRINDHA AR");
+
+    Lcd_cursor(&lcd, 1, 2);
+    Lcd_string(&lcd, "212225040050");
+
+    while (1)
+    {
+    }
+}
+
+void SystemClock_Config(void)
+{
+    RCC->CR |= RCC_CR_HSION;
+    while ((RCC->CR & RCC_CR_HSIRDY) == 0) {}
+    RCC->CFGR &= ~RCC_CFGR_SW;
+}
+
+static void MX_GPIO_Init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_10, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0 | GPIO_PIN_1, GPIO_PIN_RESET);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
+
+void Error_Handler(void)
+{
+    __disable_irq();
+    while (1) {}
+}
+```
 
 
 ## Output screen shots of proteus  :
- 
+ <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/72e69767-cb71-4ee0-afb6-1c1efa5ca39c" />
+
  
  ## CIRCUIT DIAGRAM (EXPORT THE GRAPHICS TO PDF AND ADD THE SCREEN SHOT HERE): 
- 
+ <img width="1023" height="725" alt="image" src="https://github.com/user-attachments/assets/2ebfb86d-4d0a-479f-93cb-876d1d66cabf" />
+
  
 ## Result :
 Interfacing a lcd display with ARM microcontroller are simulated in proteus and the results are verified.
